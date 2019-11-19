@@ -7,7 +7,7 @@
 ================================================================================
 
 ## INSTALLATION
-`<git clone https://github.com/jmacfarland/misinformation-bot
+```git clone https://github.com/jmacfarland/misinformation-bot
 cd misinformation-bot
 source env/bin/activate
-pip install -r requirements.txt>`
+pip install -r requirements.txt```
