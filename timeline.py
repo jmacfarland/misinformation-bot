@@ -31,9 +31,10 @@ def get_statuses(username):
     all_statuses = tweepy.Cursor(api.user_timeline, screen_name='StadiaFan', tweet_mode="extended").items()
     return [remove_emoji(str(status.full_text)) for status in all_statuses]
 
-username = "StadiaFan" # the twitter handle of an account to scrub the timeline of
-print("THE TIMELINE OF: " + username + "\n________________")
-all_statuses = get_statuses(username)
-for status in all_statuses:
-    print(status)
-print("___________\nEND OF TIMELINE")
+if __name__ == "__main__":
+    username = "StadiaFan" # the twitter handle of an account to scrub the timeline of
+    print("THE TIMELINE OF: " + username + "\n________________")
+    all_statuses = get_statuses(username)
+    for status in all_statuses:
+        print(status)
+    print("___________\nEND OF TIMELINE")
