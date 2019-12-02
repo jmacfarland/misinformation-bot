@@ -13,8 +13,9 @@ def get_keywords(username):
 
     return usernames, hashtags
 
-usernames, hashtags = get_keywords("StadiaFan")
+if __name__ == "__main__":
+    usernames, hashtags = get_keywords("StadiaFan")
 
-print(usernames)
-print("\n\n")
-print(hashtags)
+    print(usernames)
+    print("\n\n")
+    print(hashtags)
