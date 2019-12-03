@@ -20,26 +20,27 @@ def remove_emoji(string):
                            "]+", flags=re.UNICODE)
     return emoji_pattern.sub(r'', string)
 
+#print(remove_emoji("TEST \U0001F44D"))
+
 def load_credentials():
     with open("credentials.txt") as creds_file:
         return json.load(creds_file)
 
-# Credentials for the bot are private, this function handles loading them from a seperate file
-# that stays hidden
-creds = load_credentials()
-#print(remove_emoji("TEST \U0001F44D"))
+def get_statuses(username):
+    creds = load_credentials()
+    auth = tweepy.OAuthHandler(creds['key'], creds['key_secret'])
+    auth.set_access_token(creds['token'], creds['token_secret'])
+    api = tweepy.API(auth)
 
-auth = tweepy.OAuthHandler(creds['key'], creds['key_secret'])
-auth.set_access_token(creds['token'], creds['token_secret'])
-api = tweepy.API(auth)
+    # Our original method did not provide the full timeline, found a solution at this link:
+    #  https://stackoverflow.com/questions/42225364/getting-whole-user-timeline-of-a-twitter-user
+    all_statuses = tweepy.Cursor(api.user_timeline, screen_name='StadiaFan', tweet_mode="extended").items()
+    return [remove_emoji(str(status.full_text)) for status in all_statuses]
 
-username = "StadiaFan" # the twitter handle of an account to scrub the timeline of
-
-print("THE TIMELINE OF: " + username + "\n________________")
-
-# Our original method did not provide the full timeline, found a solution at this link:
-#  https://stackoverflow.com/questions/42225364/getting-whole-user-timeline-of-a-twitter-user
-for status in tweepy.Cursor(api.user_timeline, screen_name='StadiaFan', tweet_mode="extended").items():
-    print(remove_emoji(status.full_text))
-
-print("___________\nEND OF TIMELINE")
+if __name__ == "__main__":
+    username = "StadiaFan" # the twitter handle of an account to scrub the timeline of
+    print("THE TIMELINE OF: " + username + "\n________________")
+    all_statuses = get_statuses(username)
+    for status in all_statuses:
+        print(status)
+    print("___________\nEND OF TIMELINE")
