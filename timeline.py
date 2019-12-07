@@ -2,7 +2,6 @@ import sys
 import tweepy
 import json
 
-from models import UserType, User, Tweet
 from utils import Utils
 
 # emoji unicode causes the program to crash, attempted this solution:

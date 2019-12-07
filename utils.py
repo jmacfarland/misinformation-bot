@@ -1,8 +1,10 @@
 import re
 import json
 import tweepy
+from models import UserType, User, Tweet
 
 class Utils:
+    @staticmethod
     def remove_emoji(string):
         emoji_pattern = re.compile("["
                                u"\U0001F600-\U0001F64F"  # emoticons
@@ -15,16 +17,19 @@ class Utils:
                                "]+", flags=re.UNICODE)
         return emoji_pattern.sub(r'', string)
 
+    @staticmethod
     def load_credentials():
         with open("credentials.txt") as creds_file:
             return json.load(creds_file)
 
+    @staticmethod
     def get_user(api, username, user_type=UserType.UNKNOWN):
         tweets_cursor = tweepy.Cursor(api.user_timeline, screen_name=username, tweet_mode="extended")
         return User(tweets_cursor, user_type)
 
+    @staticmethod
     def get_api():
-        creds = load_credentials()
+        creds = Utils.load_credentials()
         auth = tweepy.OAuthHandler(creds['key'], creds['key_secret'])
         auth.set_access_token(creds['token'], creds['token_secret'])
         api = tweepy.API(auth)
