@@ -1,9 +1,13 @@
 from enum import IntEnum
 import json
+import csv
 
 class Object:
-    def toJSON(self):
-        return json.dumps(self, default=lambda o: o.__dict__, sort_keys=True, indent=2)
+    def toJSON(self, pretty=True):
+        if pretty:
+            return json.dumps(self, default=lambda o: o.__dict__, sort_keys=True, indent=2)
+        else:
+            return json.dumps(self, default=lambda o: o.__dict__)
 
     def __str__(self):
         return self.toJSON()

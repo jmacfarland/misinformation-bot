@@ -5,6 +5,13 @@ from models import UserType, User, Tweet
 
 class Utils:
     @staticmethod
+    def parse_type(type):
+        if type == 'human' or type == 'HUMAN':
+            return UserType.HUMAN
+        if type == 'bot' or type == 'BOT':
+            return UserType.BOT
+
+    @staticmethod
     def remove_emoji(string):
         emoji_pattern = re.compile("["
                                u"\U0001F600-\U0001F64F"  # emoticons
@@ -23,7 +30,10 @@ class Utils:
             return json.load(creds_file)
 
     @staticmethod
-    def get_user(api, username, user_type=UserType.UNKNOWN):
+    def get_user(api, username=None, id=None, user_type=UserType.UNKNOWN):
+        if username == None:
+            username = api.get_user(id).screen_name
+        print("Retrieving user '%s'" % username)
         tweets_cursor = tweepy.Cursor(api.user_timeline, screen_name=username, tweet_mode="extended")
         return User(tweets_cursor, user_type)
 
