@@ -12,17 +12,20 @@ class Dataset(Object):
         self.bots = []
         self.unknown = []
 
-    def load_csv(self, filename, numUsers=-1):
+    def load_csv(self, filename, numUsers, verbose=False):
         with open(filename) as csvfile:
             api = Utils.get_api()
             reader = list(csv.reader(csvfile, delimiter='\t'))
+            print(reader)
 
-            if numUsers > 0:
+            if numUsers is not None:
                 limit = numUsers
             else:
                 limit = sum(1 for row in csvfile)
 
-            for row in reader[0:limit]:
+            count = 0
+            for row in reader:
+                print('AccountID %s' % row[0])
                 type = Utils.parse_type(row[1])
                 user = None
                 try:
@@ -38,13 +41,24 @@ class Dataset(Object):
                     self.bots.append(user)
                 else:
                     self.unknown.append(user)
-            close(csvfile)
+                count += 1
+                if count >= limit:
+                    break
+            csvfile.close()
 
-    def save(self, filename):
+    def save(self, filename, verbose=False):
         with open(filename, 'w') as f:
             f.write(self.toJSON(pretty=False))
+            if verbose:
+                print('Wrote %s human, %s bot, and %s unknown accounts' % (len(self.humans), len(self.bots), len(self.unknown)))
             f.close()
 
-    def load(self, filename):
+    def load(self, filename, verbose=False):
         with open(filename, 'r') as f:
             file_json = json.loads(f.read())
+            self.humans = file_json['humans']
+            self.bots = file_json['bots']
+            self.unknown = file_json['unknown']
+            if verbose:
+                print('Loaded %s human, %s bot, and %s unknown accounts' % (len(self.humans), len(self.bots), len(self.unknown)))
+            f.close()
