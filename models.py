@@ -5,9 +5,9 @@ import csv
 class Object:
     def toJSON(self, pretty=True):
         if pretty:
-            return json.dumps(self, default=lambda o: o.__dict__, sort_keys=True, indent=2)
+            return json.dumps(self, default=lambda o: o.__dict__, sort_keys=True, indent=2).strip("'<>()").replace('\'', '\"')
         else:
-            return json.dumps(self, default=lambda o: o.__dict__)
+            return json.dumps(self, default=lambda o: o.__dict__).strip("'<>()").replace('\'', '\"')
 
     def __str__(self):
         return self.toJSON()

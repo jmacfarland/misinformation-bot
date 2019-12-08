@@ -4,11 +4,13 @@ import tweepy
 import time
 import json
 import datetime
+import logging
 from models import Object, User, UserType
 from utils import Utils
 
 class Dataset(Object):
     def __init__(self):
+        self.log = logging.getLogger(__name__).addHandler(logging.fileHandler('%s.log'%str(datetime.datetime.now().replace(' ','_'))))
         self.humans = []
         self.bots = []
         self.unknown = []
@@ -28,12 +30,12 @@ class Dataset(Object):
 
             for row in list(reader)[skip:skip+limit]:
                 line = line + 1
-                print('AccountID %s, line %s' % (row[0], line))
+                self.log.info('AccountID %s, line %s' % (row[0], line))
                 type = Utils.parse_type(row[1])
                 try:
                     user = Utils.get_user(api, id=row[0])
                 except tweepy.TweepError as e:
-                    print('ERROR: %s' % e)
+                    self.log.error(e)
                     continue
 
                 self.save_user(directory, '_%s.dat'%str(line), user, verbose)
@@ -52,14 +54,14 @@ class Dataset(Object):
         with open(directory+'/'+filename, 'w') as f:
             f.write(user.toJSON(pretty=False))
             if verbose:
-                print('Wrote %s to %s/%s' % (user.screen_name, directory, filename))
+                self.log.info('Wrote %s to %s/%s' % (user.screen_name, directory, filename))
             f.close()
 
     def save(self, filename, verbose=False):
         with open(filename, 'w') as f:
             f.write(self.toJSON(pretty=False))
             if verbose:
-                print('Wrote %s human, %s bot, and %s unknown accounts' % (len(self.humans), len(self.bots), len(self.unknown)))
+                self.log.info('Wrote %s human, %s bot, and %s unknown accounts' % (len(self.humans), len(self.bots), len(self.unknown)))
             f.close()
 
     def load(self, filename, verbose=False):
@@ -69,5 +71,5 @@ class Dataset(Object):
             self.bots = file_json['bots']
             self.unknown = file_json['unknown']
             if verbose:
-                print('Loaded %s human, %s bot, and %s unknown accounts' % (len(self.humans), len(self.bots), len(self.unknown)))
+                self.log.info('Loaded %s human, %s bot, and %s unknown accounts' % (len(self.humans), len(self.bots), len(self.unknown)))
             f.close()
