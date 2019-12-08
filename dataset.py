@@ -33,8 +33,7 @@ class Dataset(Object):
                     user = Utils.get_user(api, id=row[0])
                 except tweepy.TweepError as e:
                     print('ERROR: %s' % e)
-                    time.sleep(60)
-                    user = Utils.get_user(api, id=row[0])
+                    continue
 
                 self.save_user(directory, '_%s.dat'%str(count), user, verbose)
                 count = count + 1
