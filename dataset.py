@@ -16,7 +16,6 @@ class Dataset(Object):
         with open(filename) as csvfile:
             api = Utils.get_api()
             reader = list(csv.reader(csvfile, delimiter='\t'))
-            print(reader)
 
             if numUsers is not None:
                 limit = numUsers
