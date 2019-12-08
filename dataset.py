@@ -25,9 +25,11 @@ class Dataset(Object):
 
             directory = filename.split('.')[0]
             count = skip-1
+            line = 0
 
             for row in list(reader)[skip:skip+limit]:
-                print('AccountID %s' % row[0])
+                line = line + 1
+                print('AccountID %s, line %s' % (row[0], line))
                 type = Utils.parse_type(row[1])
                 try:
                     user = Utils.get_user(api, id=row[0])
