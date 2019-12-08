@@ -1,3 +1,4 @@
+import os
 import csv
 import tweepy
 import time
@@ -22,27 +23,33 @@ class Dataset(Object):
             else:
                 limit = sum([1 for row in csvfile]) - 1
 
-            for row in list(reader)[skip:skip+limit]:
-                try:
-                    print('AccountID %s' % row[0])
-                    type = Utils.parse_type(row[1])
-                    user = None
-                    try:
-                        user = Utils.get_user(api, id=row[0])
-                    except tweepy.TweepError:
-                        print(str(datetime.datetime.now()) + '\tRate limit hit! Waiting 15 minutes...')
-                        time.sleep(900)
-                        user = Utils.get_user(api, id=row[0])
+            directory = filename.split('.')[0]
+            count = skip
 
-                    if type == UserType.HUMAN:
-                        self.humans.append(user)
-                    elif type == UserType.BOT:
-                        self.bots.append(user)
-                    else:
-                        self.unknown.append(user)
-                except Exception as e:
-                    print('Error: %s' % e)
+            for row in list(reader)[skip:skip+limit]:
+                print('AccountID %s' % row[0])
+                type = Utils.parse_type(row[1])
+                user = Utils.get_user(api, id=row[0])
+
+                self.save_user(directory, '_%s.dat'%str(count), user, verbose)
+                count = count + 1
+
+                if type == UserType.HUMAN:
+                    self.humans.append(user)
+                elif type == UserType.BOT:
+                    self.bots.append(user)
+                else:
+                    self.unknown.append(user)
             csvfile.close()
+
+    def save_user(self, directory, filename, user, verbose=False):
+        if not os.path.exists(directory):
+            os.makedirs(directory)
+        with open(directory+'/'+filename, 'w') as f:
+            f.write(user.toJSON())
+            if verbose:
+                print('Wrote %s to %s/%s' % (user.screen_name, directory, filename))
+            f.close()
 
     def save(self, filename, verbose=False):
         with open(filename, 'w') as f:

@@ -9,11 +9,7 @@ import sys
 def main(args):
     d = Dataset()
     if args.gather:
-        if not args.outfile:
-            print('Must specify --outfile')
-            sys.exit(1)
         d.load_csv(args.infile, args.num_accounts, args.skip, args.verbose)
-        d.save(args.outfile, args.verbose)
     elif args.load:
         d.load(args.infile, args.verbose)
     else:

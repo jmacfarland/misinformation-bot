@@ -34,7 +34,7 @@ class Utils:
         if username == None:
             username = api.get_user(id).screen_name
         print("Retrieving user '%s'" % username)
-        tweets_cursor = tweepy.Cursor(api.user_timeline, screen_name=username, tweet_mode="extended")
+        tweets_cursor = tweepy.Cursor(api.user_timeline, screen_name=username, tweet_mode='extended') #tweet_mode="extended")
         return User(tweets_cursor, user_type)
 
     @staticmethod
@@ -42,7 +42,7 @@ class Utils:
         creds = Utils.load_credentials()
         auth = tweepy.OAuthHandler(creds['key'], creds['key_secret'])
         auth.set_access_token(creds['token'], creds['token_secret'])
-        api = tweepy.API(auth)
+        api = tweepy.API(auth, wait_on_rate_limit=True, wait_on_rate_limit_notify=True)
         if not api.verify_credentials():
             print('Bad credentials!')
             sys.exit(1)
