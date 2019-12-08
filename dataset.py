@@ -29,7 +29,12 @@ class Dataset(Object):
             for row in list(reader)[skip:skip+limit]:
                 print('AccountID %s' % row[0])
                 type = Utils.parse_type(row[1])
-                user = Utils.get_user(api, id=row[0])
+                try:
+                    user = Utils.get_user(api, id=row[0])
+                except tweepy.TweepError as e:
+                    print('ERROR: %s' % e)
+                    time.sleep(60)
+                    user = Utils.get_user(api, id=row[0])
 
                 self.save_user(directory, '_%s.dat'%str(count), user, verbose)
                 count = count + 1
