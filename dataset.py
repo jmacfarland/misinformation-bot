@@ -24,7 +24,7 @@ class Dataset(Object):
                 limit = sum([1 for row in csvfile]) - 1
 
             directory = filename.split('.')[0]
-            count = skip
+            count = skip-1
 
             for row in list(reader)[skip:skip+limit]:
                 print('AccountID %s' % row[0])
