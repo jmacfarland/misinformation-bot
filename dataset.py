@@ -24,8 +24,7 @@ class Dataset(Object):
                 limit = sum([1 for row in csvfile]) - 1
 
             directory = filename.split('.')[0]
-            count = skip-1
-            line = 0
+            line = skip - 1
 
             for row in list(reader)[skip:skip+limit]:
                 line = line + 1
@@ -37,8 +36,7 @@ class Dataset(Object):
                     print('ERROR: %s' % e)
                     continue
 
-                self.save_user(directory, '_%s.dat'%str(count), user, verbose)
-                count = count + 1
+                self.save_user(directory, '_%s.dat'%str(line), user, verbose)
 
                 if type == UserType.HUMAN:
                     self.humans.append(user)
