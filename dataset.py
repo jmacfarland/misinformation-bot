@@ -50,7 +50,7 @@ class Dataset(Object):
         if not os.path.exists(directory):
             os.makedirs(directory)
         with open(directory+'/'+filename, 'w') as f:
-            f.write(user.toJSON())
+            f.write(user.toJSON(pretty=False))
             if verbose:
                 print('Wrote %s to %s/%s' % (user.screen_name, directory, filename))
             f.close()
