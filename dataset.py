@@ -32,6 +32,7 @@ class Dataset(Object):
             for row in list(reader)[skip:skip+limit]:
                 line = line + 1
                 self.log.info('AccountID %s, line %s' % (row[0], line))
+                print('AccountID %s, line %s' % (row[0], line))
                 type = Utils.parse_type(row[1])
                 try:
                     user = Utils.get_user(api, id=row[0])
