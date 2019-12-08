@@ -21,7 +21,7 @@ class Dataset(Object):
             if numUsers is not None:
                 limit = numUsers
             else:
-                limit = sum(1 for row in csvfile)
+                limit = sum([1 for row in csvfile])
 
             count = 0
             for row in reader:
