@@ -23,22 +23,25 @@ class Dataset(Object):
                 limit = sum([1 for row in csvfile]) - 1
 
             for row in list(reader)[skip:skip+limit]:
-                print('AccountID %s' % row[0])
-                type = Utils.parse_type(row[1])
-                user = None
                 try:
-                    user = Utils.get_user(api, id=row[0])
-                except tweepy.TweepError:
-                    print(str(datetime.datetime.now()) + '\tRate limit hit! Waiting 15 minutes...')
-                    time.sleep(900)
-                    user = Utils.get_user(api, id=row[0])
+                    print('AccountID %s' % row[0])
+                    type = Utils.parse_type(row[1])
+                    user = None
+                    try:
+                        user = Utils.get_user(api, id=row[0])
+                    except tweepy.TweepError:
+                        print(str(datetime.datetime.now()) + '\tRate limit hit! Waiting 15 minutes...')
+                        time.sleep(900)
+                        user = Utils.get_user(api, id=row[0])
 
-                if type == UserType.HUMAN:
-                    self.humans.append(user)
-                elif type == UserType.BOT:
-                    self.bots.append(user)
-                else:
-                    self.unknown.append(user)
+                    if type == UserType.HUMAN:
+                        self.humans.append(user)
+                    elif type == UserType.BOT:
+                        self.bots.append(user)
+                    else:
+                        self.unknown.append(user)
+                except Exception as e:
+                    print('Error: %s' % e)
             csvfile.close()
 
     def save(self, filename, verbose=False):
