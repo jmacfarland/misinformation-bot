@@ -29,7 +29,7 @@ class Dataset(Object):
                 user = None
                 try:
                     user = Utils.get_user(api, id=row[0])
-                except tweepy.RateLimitError:
+                except tweepy.TweepError:
                     print(datetime.datetime.now() + 'Rate limit hit! Waiting 15 minutes...')
                     time.sleep(900)
                     user = Utils.get_user(api, id=row[0])
