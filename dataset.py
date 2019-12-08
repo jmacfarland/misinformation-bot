@@ -11,7 +11,7 @@ from utils import Utils
 class Dataset(Object):
     def __init__(self):
         self.log = logging.getLogger(__name__)
-        self.log.addHandler(logging.FileHandler('%s.log'%str(datetime.datetime.now().replace(' ','_'))))
+        self.log.addHandler(logging.FileHandler('%s.log'%str(datetime.datetime.now()).replace(' ','_')))
         self.humans = []
         self.bots = []
         self.unknown = []
