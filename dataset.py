@@ -12,18 +12,17 @@ class Dataset(Object):
         self.bots = []
         self.unknown = []
 
-    def load_csv(self, filename, numUsers, verbose=False):
+    def load_csv(self, filename, numUsers, skip, verbose=False):
         with open(filename) as csvfile:
             api = Utils.get_api()
             reader = list(csv.reader(csvfile, delimiter='\t'))
 
             if numUsers is not None:
-                limit = numUsers
+                limit = numUsers - 1
             else:
-                limit = sum([1 for row in csvfile])
+                limit = sum([1 for row in csvfile]) - 1
 
-            count = 0
-            for row in reader:
+            for row in list(reader)[skip:skip+limit]:
                 print('AccountID %s' % row[0])
                 type = Utils.parse_type(row[1])
                 user = None
@@ -40,9 +39,6 @@ class Dataset(Object):
                     self.bots.append(user)
                 else:
                     self.unknown.append(user)
-                count += 1
-                if count >= limit:
-                    break
             csvfile.close()
 
     def save(self, filename, verbose=False):
