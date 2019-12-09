@@ -50,6 +50,49 @@ class Dataset(Object):
                     self.unknown.append(user)
             csvfile.close()
 
+    def remove_user_type(self, directory, num):
+        for i in range(num):
+            obj = None
+            filename = directory+'/_%s.dat'%i
+            try:
+                with open(filename, 'r') as f:
+                    data = f.read()
+                    obj = json.loads(data.replace('"type": UserType.UNKNOWN,', ''))
+            except:
+                print('%s not found'%filename)
+
+            open(filename, 'w').close() #clear the file
+            with open(filename, 'w') as f:
+                f.write(json.dumps(obj, default=lambda o: o.__dict__).strip("'<>()").replace('\'', '\"'))
+                f.close()
+
+
+    def categorize_files(self, directory, manifest):
+        map = {}
+        num_accounts = 0
+
+        # Load mapping of AccountID -> (human | bot)
+        with open(manifest, 'r') as m:
+            reader = list(csv.reader(m, delimiter='\t'))
+            lr = list(reader)
+            count = len(lr)
+            for row in lr:
+                map[row[0]] = row[1]
+            m.close()
+
+        with open(directory+'/_1.dat') as f:
+            obj = json.loads(f.read().replace('"type": UserType.UNKNOWN,', ''))
+            print(obj)
+
+        # load and categorize all files in dir
+        for i in range(count):
+            try:
+                with open(directory+'/_%s.dat'%i) as f:
+                    obj = json.load(f)
+                    print(obj)
+            except:
+                pass
+
     def save_user(self, directory, filename, user, verbose=False):
         if not os.path.exists(directory):
             os.makedirs(directory)
