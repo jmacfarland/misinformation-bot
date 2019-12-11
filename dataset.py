@@ -80,18 +80,17 @@ class Dataset(Object):
                 map[row[0]] = row[1]
             m.close()
 
-        with open(directory+'/_1.dat') as f:
-            obj = json.loads(f.read().replace('"type": UserType.UNKNOWN,', ''))
-            print(obj)
-
         # load and categorize all files in dir
-        for i in range(count):
-            try:
-                with open(directory+'/_%s.dat'%i) as f:
-                    obj = json.load(f)
-                    print(obj)
-            except:
-                pass
+        #for i in range(count):
+        i = 1
+        obj = None
+        filename = directory+'/_%s.dat'%i
+        print(filename)
+        with open(filename) as f:
+            obj = json.loads(f.read())
+            type = map[obj['id']]
+            obj['type'] = type
+            print('%s: %s'%(filename,type))
 
     def save_user(self, directory, filename, user, verbose=False):
         if not os.path.exists(directory):
