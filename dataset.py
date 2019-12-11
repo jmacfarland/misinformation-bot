@@ -58,8 +58,8 @@ class Dataset(Object):
                 with open(filename, 'r') as f:
                     data = f.read()
                     obj = json.loads(data.replace('"type": UserType.UNKNOWN,', ''))
-            except:
-                print('%s not found'%filename)
+            except Exception as e:
+                print(e)
 
             open(filename, 'w').close() #clear the file
             with open(filename, 'w') as f:
